@@ -1,0 +1,16 @@
+services:
+  x-bot:
+    image: constructure-x-bot:latest
+    build: .
+    container_name: x-bot
+    restart: unless-stopped
+    network_mode: host
+    env_file:
+      - path: ./.env.local
+        required: false
+    environment:
+      PORT: "7710"
+      X_CDP_URL: "http://127.0.0.1:18810"
+      MINIMAX_MODEL: "MiniMax-M2.5-highspeed"
+      XBOT_LANGUAGE: "auto"
+      # MINIMAX_API_KEY: set in .env.local
