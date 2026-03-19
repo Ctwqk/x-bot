@@ -1,21 +1,29 @@
 /**
- * MiniMax chat completion client (OpenAI-compatible).
+ * Managed chat completion client.
+ * If `LLM_BASE_URL` is set, route requests through watchdog/gateway.
+ * Otherwise fall back to the direct MiniMax-compatible endpoint.
  */
 
-const API_BASE = (process.env.MINIMAX_API_BASE || 'https://api.minimax.io/v1').replace(/\/$/, '');
-const MODEL = process.env.MINIMAX_MODEL || 'MiniMax-M2.5-highspeed';
+import { randomUUID } from 'crypto';
+
+const API_BASE = (process.env.LLM_BASE_URL || process.env.MINIMAX_API_BASE || 'https://api.minimax.io/v1').replace(/\/$/, '');
+const MODEL = process.env.LLM_MODEL || process.env.MINIMAX_MODEL || 'MiniMax-M2.5-highspeed';
 
 export async function chat(systemPrompt, userPrompt) {
-  const apiKey = process.env.MINIMAX_API_KEY;
-  if (!apiKey) throw new Error('Missing MINIMAX_API_KEY');
+  const apiKey = process.env.LLM_API_KEY || process.env.MINIMAX_API_KEY || '';
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  if (apiKey) {
+    headers.Authorization = `Bearer ${apiKey}`;
+  }
 
   const res = await fetch(`${API_BASE}/chat/completions`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
+    headers,
     body: JSON.stringify({
+      source: 'x-bot',
+      client_request_id: `x-bot:${randomUUID()}`,
       model: MODEL,
       messages: [
         { role: 'system', content: systemPrompt },
