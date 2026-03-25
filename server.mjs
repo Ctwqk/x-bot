@@ -1,7 +1,7 @@
 /**
  * x-bot HTTP service
  *
- * Exposes a simple HTTP API for posting to X via MiniMax + Playwright.
+ * Exposes a simple HTTP API for posting to X via MiniMax + OpenCLI.
  * Other services call this instead of managing browser automation themselves.
  *
  * POST /post       { source, title, link?, summary? }  LLM-generated tweet
@@ -13,6 +13,7 @@
  *   MINIMAX_API_KEY   Required for /post
  *   MINIMAX_MODEL     Model name (default MiniMax-M2.5-highspeed)
  *   X_CDP_URL         Chrome CDP base URL (default http://127.0.0.1:18810)
+ *   OPENCLI_CDP_TARGET Preferred Chrome tab target for opencli (default about:blank)
  *   XBOT_LANGUAGE     zh | en | auto (default auto)
  */
 
