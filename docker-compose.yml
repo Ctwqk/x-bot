@@ -10,7 +10,7 @@ services:
         required: false
     environment:
       PORT: "7710"
-      X_CDP_URL: "http://127.0.0.1:18810"
+      X_PLATFORM_API_BASE: "http://127.0.0.1:3001/platforms/api/platforms/x"
       MINIMAX_MODEL: "MiniMax-M2.5-highspeed"
       XBOT_LANGUAGE: "auto"
       # MINIMAX_API_KEY: set in .env.local

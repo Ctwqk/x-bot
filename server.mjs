@@ -1,8 +1,9 @@
 /**
  * x-bot HTTP service
  *
- * Exposes a simple HTTP API for posting to X via MiniMax + OpenCLI.
- * Other services call this instead of managing browser automation themselves.
+ * Exposes a simple HTTP API for posting to X via MiniMax plus the unified
+ * VideoProcess platform browser manager. Other services can keep using this
+ * compatibility layer without managing X automation directly.
  *
  * POST /post       { source, title, link?, summary? }  LLM-generated tweet
  * POST /post/raw   { text }                             Post text as-is
@@ -12,8 +13,7 @@
  *   PORT              HTTP port (default 7710)
  *   MINIMAX_API_KEY   Required for /post
  *   MINIMAX_MODEL     Model name (default MiniMax-M2.5-highspeed)
- *   X_CDP_URL         Chrome CDP base URL (default http://127.0.0.1:18810)
- *   OPENCLI_CDP_TARGET Preferred Chrome tab target for opencli (default about:blank)
+ *   X_PLATFORM_API_BASE Unified platform API base (default http://127.0.0.1:3001/platforms/api/platforms/x)
  *   XBOT_LANGUAGE     zh | en | auto (default auto)
  */
 
@@ -136,5 +136,5 @@ const server = createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`[x-bot] Listening on http://0.0.0.0:${PORT}`);
   console.log(`[x-bot] MiniMax model: ${MODEL}`);
-  console.log(`[x-bot] CDP: ${process.env.X_CDP_URL || 'http://127.0.0.1:18810'}`);
+  console.log(`[x-bot] Platform API: ${process.env.X_PLATFORM_API_BASE || 'http://127.0.0.1:3001/platforms/api/platforms/x'}`);
 });
