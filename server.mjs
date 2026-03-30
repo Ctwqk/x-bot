@@ -19,7 +19,7 @@
 
 import { createServer } from 'node:http';
 import { chat, MODEL } from './minimax.mjs';
-import { postText, checkCdp } from './poster.mjs';
+import { postMediaText, postText, checkCdp } from './poster.mjs';
 
 const PORT = Number(process.env.PORT || 7710);
 const TWEET_MAX = 280;
@@ -127,6 +127,23 @@ const server = createServer(async (req, res) => {
     console.log(`[x-bot] Raw post: ${text.slice(0, 80)}…`);
     const result = await postText(text);
     if (!result.ok) console.error('[x-bot] Post failed:', result.error);
+    return json(res, result.ok ? 200 : 502, result);
+  }
+
+  // POST /post/media/raw — post arbitrary text with local media paths
+  if (req.method === 'POST' && url.pathname === '/post/media/raw') {
+    let body;
+    try { body = await readBody(req); } catch { return json(res, 400, { error: 'Invalid JSON' }); }
+
+    const { text, media_paths: mediaPaths, reply_to_url: replyToUrl } = body;
+    if (!text) return json(res, 400, { error: 'text is required' });
+    if (!Array.isArray(mediaPaths) || mediaPaths.length === 0) {
+      return json(res, 400, { error: 'media_paths is required' });
+    }
+
+    console.log(`[x-bot] Raw media post: ${String(text).slice(0, 80)}… (${mediaPaths.length} file(s))`);
+    const result = await postMediaText(text, mediaPaths, replyToUrl);
+    if (!result.ok) console.error('[x-bot] Media post failed:', result.error);
     return json(res, result.ok ? 200 : 502, result);
   }
 
