@@ -1,0 +1,25 @@
+# Node dependencies and build output
+node_modules/
+dist/
+build/
+
+# Python cache and virtualenvs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# Editor and OS files
+.DS_Store
+.idea/
+.vscode/
+
+# Logs
+*.log
